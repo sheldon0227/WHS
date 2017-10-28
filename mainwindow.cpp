@@ -11,6 +11,8 @@
 #include <qfileinfo.h>
 using namespace std;
 
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -22,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     version->setText("Version 1.0 beta ");
     version->setAlignment(Qt::AlignHCenter);
     ui->statusBar->addPermanentWidget(version);
+
+
     //初始化(仅第一次)
     QFileInfo database("data.db");
     if (database.isFile())
@@ -32,10 +36,20 @@ MainWindow::MainWindow(QWidget *parent) :
     else
     {
         ui->statusBar->showMessage(tr("轩轩：检测第一次使用，初始化数据库"),4000);
-        initial();
-    }//数据库不存在时初始化数据库
+        initial();//数据库不存在时初始化数据库
+    }
+
     connect(ui->addSkuAction,SIGNAL(triggered(bool)),this,SLOT(addSku()));
     //Test Area
+
+    //初始化tabwidget
+    ui->tabWidget->addTab(ui->tab1,"桃子公主sku清单");
+    ui->tabWidget->addTab(ui->tab2,"微信出货助手");
+
+
+
+
+    //初始化总sku table
     ui->itemMainTable->setColumnCount(2);
     QStringList itemTableHorizontalHeader;
     itemTableHorizontalHeader.append("SKU ID");
@@ -57,13 +71,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::initial()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE","Main");
     db.setDatabaseName("data.db");
     if (!db.open()) {
         qDebug() << "Database Error!";
     }
     else{
-        QSqlQuery myQuery;
+        QSqlQuery myQuery(db);
         myQuery.prepare("CREATE TABLE allItem (id INTEGER UNIQUE PRIMARY KEY, name NCHAR)");
         if(!myQuery.exec())
         {
@@ -83,13 +97,17 @@ void MainWindow::addSku()
 
 void MainWindow::refreshItemTable()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db;
+    if(QSqlDatabase::contains("Main"))
+        db = QSqlDatabase::database("Main");
+    else
+        db = QSqlDatabase::addDatabase("QSQLITE", "Main");
     db.setDatabaseName("data.db");
     if (!db.open()) {
         qDebug() << "Database Error!";
     }
     else{
-        QSqlQuery myQuery;
+        QSqlQuery myQuery(db);
         myQuery.prepare("SELECT * FROM allItem ORDER BY id");
         if(!myQuery.exec())
         {
