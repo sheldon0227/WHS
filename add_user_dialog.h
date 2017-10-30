@@ -15,6 +15,9 @@ public:
     explicit Add_User_Dialog(QWidget *parent = 0);
     ~Add_User_Dialog();
 
+private slots:
+    void handleAddUserButton();
+
 private:
     Ui::Add_User_Dialog *ui;
 };

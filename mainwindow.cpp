@@ -124,7 +124,7 @@ void MainWindow::addUser()
     dialog.exec();
 }
 
-void MainWindow::refreshItemTable()
+void MainWindow::refreshUserTable()
 {
     QSqlDatabase db;
     if(QSqlDatabase::contains("Main"))
@@ -137,7 +137,7 @@ void MainWindow::refreshItemTable()
     }
     else{
         QSqlQuery myQuery(db);
-        myQuery.prepare("SELECT name, phone FROM allItem ORDER BY id");
+        myQuery.prepare("SELECT name,phone FROM allUser");
         if(!myQuery.exec())
         {
             qDebug()<<myQuery.lastError();
@@ -155,7 +155,7 @@ void MainWindow::refreshItemTable()
     db.close();
 }
 
-void MainWindow::refreshUserTable()
+void MainWindow::refreshItemTable()
 {
     QSqlDatabase db;
     if(QSqlDatabase::contains("Main"))
