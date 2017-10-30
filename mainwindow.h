@@ -17,7 +17,9 @@ public:
     ~MainWindow();
 private slots:
     void addSku();
+    void addUser();
     void refreshItemTable();
+    void refreshUserTable();
 
 private:
     Ui::MainWindow *ui;

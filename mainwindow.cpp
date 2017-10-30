@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "add_sku_dialog.h"
+#include "add_user_dialog.h"
 #include <QSqlQuery>
 #include <QSql>
 #include <qsqlerror.h>
@@ -25,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
     version->setAlignment(Qt::AlignHCenter);
     ui->statusBar->addPermanentWidget(version);
 
-
     //初始化(仅第一次)
     QFileInfo database("data.db");
     if (database.isFile())
@@ -39,7 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
         initial();//数据库不存在时初始化数据库
     }
 
+    //连接信号和槽
     connect(ui->addSkuAction,SIGNAL(triggered(bool)),this,SLOT(addSku()));
+    connect(ui->addUserButton,SIGNAL(released()),this,SLOT(addUser()));
     //Test Area
 
     //初始化tabwidget
@@ -62,6 +64,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->itemMainTable->setSelectionMode((QAbstractItemView::SingleSelection));
     ui->itemMainTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     refreshItemTable();
+
+    //初始化user table
+    ui->userMainTable->setColumnCount(2);
+    QStringList userTableHorizontalHeader;
+    userTableHorizontalHeader.append("客户");
+    userTableHorizontalHeader.append("电话");
+    ui->userMainTable->verticalHeader()->setVisible(false);
+    ui->userMainTable->setHorizontalHeaderLabels(userTableHorizontalHeader);
+    ui->userMainTable->setColumnWidth(0,200);
+    ui->userMainTable->setColumnWidth(1,300);
+    ui->userMainTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->userMainTable->setSelectionMode((QAbstractItemView::SingleSelection));
+    ui->userMainTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    refreshUserTable();
 }
 
 MainWindow::~MainWindow()
@@ -83,6 +99,12 @@ void MainWindow::initial()
         {
             qDebug()<<myQuery.lastError();
         }
+        QSqlQuery createUserQuery(db);
+        createUserQuery.prepare("CREATE TABLE allUser (wechatid NCHAR, phone INTEGER UNIQUE PRIMARY KEY, name NCHAR, address NCHAR, note NCHAR)");
+        if(!createUserQuery.exec())
+        {
+            qDebug()<<createUserQuery.lastError();
+        }
         db.close();
     }
 }
@@ -95,7 +117,45 @@ void MainWindow::addSku()
     dialog.exec();
 }
 
+void MainWindow::addUser()
+{
+    Add_User_Dialog dialog(this);
+    dialog.setWindowTitle("添加新用户");
+    dialog.exec();
+}
+
 void MainWindow::refreshItemTable()
+{
+    QSqlDatabase db;
+    if(QSqlDatabase::contains("Main"))
+        db = QSqlDatabase::database("Main");
+    else
+        db = QSqlDatabase::addDatabase("QSQLITE", "Main");
+    db.setDatabaseName("data.db");
+    if (!db.open()) {
+        qDebug() << "Database Error!";
+    }
+    else{
+        QSqlQuery myQuery(db);
+        myQuery.prepare("SELECT name, phone FROM allItem ORDER BY id");
+        if(!myQuery.exec())
+        {
+            qDebug()<<myQuery.lastError();
+        }
+        ui->userMainTable->clearContents();
+        ui->userMainTable->setRowCount(0);
+        while(myQuery.next())
+        {
+            ui->userMainTable->setRowCount(ui->userMainTable->rowCount()+1);
+            ui->userMainTable->setItem(ui->userMainTable->rowCount()-1,0,new QTableWidgetItem(myQuery.value(0).toString()));
+            ui->userMainTable->setItem(ui->userMainTable->rowCount()-1,1,new QTableWidgetItem(myQuery.value(1).toString()));
+        }
+        db.close();
+    }
+    db.close();
+}
+
+void MainWindow::refreshUserTable()
 {
     QSqlDatabase db;
     if(QSqlDatabase::contains("Main"))
