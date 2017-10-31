@@ -18,6 +18,9 @@ public:
 private slots:
     void handleAddUserButton();
 
+signals:
+    void refreshTable();
+
 private:
     Ui::Add_User_Dialog *ui;
 };

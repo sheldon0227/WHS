@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->setSizeGripEnabled(false);
     QLabel *version = new QLabel(this);
     //版本号
-    version->setText("Version 1.0 beta ");
+    version->setText("source code：https://github.com/sheldon0227/WHS");
     version->setAlignment(Qt::AlignHCenter);
     ui->statusBar->addPermanentWidget(version);
 

@@ -18,6 +18,12 @@ Add_Sku_Dialog::Add_Sku_Dialog(QWidget *parent) :
     connect(ui->confirmButton,SIGNAL(released()),parent,SLOT(refreshItemTable()));
 }
 
+Add_Sku_Dialog::~Add_Sku_Dialog()
+{
+    delete ui;
+}
+
+
 void Add_Sku_Dialog::handleConfirmButton()
 {
     QMessageBox msgBox;
@@ -29,10 +35,12 @@ void Add_Sku_Dialog::handleConfirmButton()
     {
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
         db.setDatabaseName("data.db");
-        if (!db.open()) {
+        if (!db.open())
+        {
             qDebug() << "Database Error!";
         }
-        else{
+        else
+        {
             QSqlQuery myQuery;
             myQuery.prepare("INSERT INTO allItem (id, name) VALUES (:id, :name)");
             myQuery.bindValue(":id",ui->idLineEdit->text().toInt());
@@ -51,7 +59,3 @@ void Add_Sku_Dialog::handleCancelButton()
     done(0);
 }
 
-Add_Sku_Dialog::~Add_Sku_Dialog()
-{
-    delete ui;
-}
