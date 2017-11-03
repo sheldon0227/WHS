@@ -4,6 +4,7 @@
 #include <QSqlQuery>
 #include <QSql>
 #include <qsqlerror.h>
+#include <QClipboard>
 #include <QDebug>
 using namespace std;
 static double PHONE;
@@ -30,6 +31,12 @@ Single_User_dialog::Single_User_dialog(QWidget *parent) :
     connect(ui->editPushButton,SIGNAL(released()),this,SLOT(handleEditPushButton()));
     connect(ui->orderPushButton,SIGNAL(released()),this,SLOT(handleOrderPushButton()));
     connect(this,SIGNAL(refreshTable()),parent,SLOT(refreshUserTable()));
+
+    //初始combo box
+    ui->comboBox->addItem("桃肥肥");
+    ui->comboBox->addItem("桃斯斯");
+    ui->comboBox->addItem("桃哈哈");
+    ui->comboBox->addItem("桃轩轩");
 }
 
 Single_User_dialog::~Single_User_dialog()
@@ -103,5 +110,16 @@ void Single_User_dialog::handleEditPushButton()
 
 void Single_User_dialog::handleOrderPushButton()
 {
-
+    QClipboard *board = QApplication::clipboard();
+    QString output = "";
+    output.append("微信名：").append(ui->nameLineEdit->text()).append("\n");
+    output.append("订单：").append(ui->buyPlainTextEdit->toPlainText()).append("\n");
+    output.append("赠送：").append(ui->giftLineEdit->text()).append("\n");
+    output.append("地址：").append(ui->addressLineEdit->text()).append("\n");
+    output.append("电话：").append(ui->phoneLineEdit->text()).append("\n");
+    output.append("下单时间：").append(ui->dateEdit->text()).append("\n");
+    output.append("运费：").append(ui->shipLineEdit->text()).append("\n");
+    output.append("应付：").append(ui->priceLineEdit->text()).append("\n");
+    output.append("送货：").append(ui->comboBox->currentText());
+    board->setText(output);
 }
