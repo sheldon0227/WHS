@@ -6,6 +6,9 @@
 #include <qsqlerror.h>
 #include <QDebug>
 #include <QMessageBox>
+using namespace  std;
+
+
 
 Add_Sku_Dialog::Add_Sku_Dialog(QWidget *parent) :
     QDialog(parent),

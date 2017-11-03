@@ -59,7 +59,7 @@ void Add_User_Dialog::handleAddUserButton()
         {
             QSqlQuery myQuery(db);
             myQuery.prepare("INSERT INTO allUser (wechatid, phone, name, address, note) VALUES (:wechatid, :phone, :name, :address, :note)");
-            myQuery.bindValue("wechatid",ui->idLineEdit->text());
+            myQuery.bindValue(":wechatid",ui->idLineEdit->text());
             myQuery.bindValue(":phone",ui->phoneLineEdit->text().toDouble());
             myQuery.bindValue(":name",ui->nameLineEdit->text());
             myQuery.bindValue(":address",ui->addressLineEdit->text());

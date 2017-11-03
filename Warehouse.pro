@@ -29,15 +29,18 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     add_sku_dialog.cpp \
-    add_user_dialog.cpp
+    add_user_dialog.cpp \
+    single_user_dialog.cpp
 
 HEADERS += \
         mainwindow.h \
     add_sku_dialog.h \
-    add_user_dialog.h
+    add_user_dialog.h \
+    single_user_dialog.h
 
 FORMS += \
         mainwindow.ui \
     add_sku_dialog.ui \
-    add_user_dialog.ui
+    add_user_dialog.ui \
+    single_user_dialog.ui
 

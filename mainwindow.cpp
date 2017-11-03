@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "add_sku_dialog.h"
 #include "add_user_dialog.h"
+#include "single_user_dialog.h"
 #include <QSqlQuery>
 #include <QSql>
 #include <qsqlerror.h>
@@ -42,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //连接信号和槽
     connect(ui->addSkuAction,SIGNAL(triggered(bool)),this,SLOT(addSku()));
     connect(ui->addUserButton,SIGNAL(released()),this,SLOT(addUser()));
+    connect(ui->userMainTable,SIGNAL(itemDoubleClicked(QTableWidgetItem*)),this,SLOT(enterUser(QTableWidgetItem*)));
     //Test Area
 
     //初始化tabwidget
@@ -72,8 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
     userTableHorizontalHeader.append("电话");
     ui->userMainTable->verticalHeader()->setVisible(false);
     ui->userMainTable->setHorizontalHeaderLabels(userTableHorizontalHeader);
-    ui->userMainTable->setColumnWidth(0,200);
-    ui->userMainTable->setColumnWidth(1,300);
+    ui->userMainTable->setColumnWidth(0,350);
+    ui->userMainTable->setColumnWidth(1,160);
     ui->userMainTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->userMainTable->setSelectionMode((QAbstractItemView::SingleSelection));
     ui->userMainTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -152,7 +154,6 @@ void MainWindow::refreshUserTable()
         }
         db.close();
     }
-    db.close();
 }
 
 void MainWindow::refreshItemTable()
@@ -183,7 +184,17 @@ void MainWindow::refreshItemTable()
         }
         db.close();
     }
-    db.close();
+}
+
+void MainWindow::enterUser(QTableWidgetItem* item)
+{
+    QTableWidgetItem* phone = ui->userMainTable->item(ui->userMainTable->currentRow(),1);
+    QTableWidgetItem* name = ui->userMainTable->item(ui->userMainTable->currentRow(),0);
+    Single_User_dialog dialog(this);
+    connect(this,SIGNAL(sendUserPhone(double)),&dialog,SLOT(receiveUserPhone(double)));
+    dialog.setWindowTitle(name->text()+"("+phone->text()+")");
+    emit sendUserPhone(phone->text().toDouble());
+    dialog.exec();
 }
 
 //void MainWindow::valueRec(QString v)

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTableWidget>
 
 
 namespace Ui {
@@ -15,11 +16,16 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+signals:
+    void sendUserPhone(double);
+
 private slots:
     void addSku();
     void addUser();
     void refreshItemTable();
     void refreshUserTable();
+    void enterUser(QTableWidgetItem*);
 
 private:
     Ui::MainWindow *ui;
