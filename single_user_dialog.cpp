@@ -16,6 +16,7 @@ Single_User_dialog::Single_User_dialog(QWidget *parent) :
     ui->setupUi(this);
     //时间输入默认当天
     ui->dateEdit->setDate(QDate::currentDate());
+    ui->dateTimeEdit->setDateTime(QDateTime::currentDateTime());
     //让notePlainTextEdit&buyPlainTextEdit 垂直填充 Form Layout
     QSizePolicy policy = ui->notePlainTextEdit->sizePolicy();
     policy.setVerticalStretch(1);
@@ -118,6 +119,7 @@ void Single_User_dialog::handleOrderPushButton()
     output.append("地址：").append(ui->addressLineEdit->text()).append("\n");
     output.append("电话：").append(ui->phoneLineEdit->text()).append("\n");
     output.append("下单时间：").append(ui->dateEdit->text()).append("\n");
+    output.append("预计送货时间：").append(ui->dateTimeEdit->text()).append("\n");
     output.append("运费：").append(ui->shipLineEdit->text()).append("\n");
     output.append("应付：").append(ui->priceLineEdit->text()).append("\n");
     output.append("送货：").append(ui->comboBox->currentText());
